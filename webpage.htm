@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipe Finder Application</title>
+    <style>
+        /* Basic CSS for styling - you can move this to a separate style.css file */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #975b61;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #14776d;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(207, 200, 200, 0.85);
+            color: #eff0ea
+        }
+        h1, h2 {
+            color: #f1f3f5;
+        }
+        .search-section {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 110px);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #ab145d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 5px;
+        }
+        button:hover {
+            background-color: #ebeb30;
+        }
+        #ingredients-list {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #ebd8d8;
+        }
+        .ingredient-tag {
+            display: inline-block;
+            background: #8e94e9;
+            padding: 5px 10px;
+            margin: 4px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        .ingredient-tag .remove-btn {
+            cursor: pointer;
+            margin-left: 5px;
+            color: #6e7c26;
+        }
+        .recipe-results {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            color: #eff0ea
+        }
+        .recipe-card {
+            background: #0b0101;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .recipe-card:hover {
+            transform: translateY(-5px);
+        }
+        .recipe-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .recipe-card-content {
+            padding: 15px;
+        }
+        .recipe-card h3 {
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        .recipe-card p {
+            font-size: 0.9em;
+            color: #f5f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Personalized Recipe Finder</h1>
+        <p>Enter the ingredients you have available in your kitchen to find matching recipes.</p>
+
+        <div class="search-section">
+            <input type="text" id="ingredient-input" placeholder="e.g., chicken, onion, tomato">
+            <button onclick="addIngredient()">Add Ingredient</button>
+            <div id="ingredients-list">
+                <!-- Added ingredients will appear here -->
+            </div>
+            <button onclick="searchRecipes()" style="margin-top: 15px;">Find Recipes</button>
+        </div>
+
+        <h2>Recommended Recipes</h2>
+        <div class="recipe-results" id="recipe-results">
+            <!-- Recipe cards will be dynamically inserted here -->
+            <p>Your recommended recipes will appear here after searching.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript for basic interaction and dynamic UI -->
+    <script>
+        const ingredientInput = document.getElementById('ingredient-input');
+        const ingredientsList = document.getElementById('ingredients-list');
+        const recipeResults = document.getElementById('recipe-results');
+        let ingredients = [];
+
+        function addIngredient() {
+            const ingredientValue = ingredientInput.value.trim();
+            if (ingredientValue && !ingredients.includes(ingredientValue.toLowerCase())) {
+                ingredients.push(ingredientValue.toLowerCase());
+                renderIngredients();
+                ingredientInput.value = '';
+            }
+        }
+
+        function removeIngredient(ingredient) {
+            ingredients = ingredients.filter(item => item !== ingredient);
+            renderIngredients();
+        }
+
+        function renderIngredients() {
+            ingredientsList.innerHTML = '';
+            ingredients.forEach(ingredient => {
+                const tag = document.createElement('span');
+                tag.className = 'ingredient-tag';
+                tag.innerHTML = `${ingredient} <span class="remove-btn" onclick="removeIngredient('${ingredient}')">x</span>`;
+                ingredientsList.appendChild(tag);
+            });
+        }
+
+        function searchRecipes() {
+            // This is where you would make an API call to your backend or recipe database.
+            // Example Placeholder:
+            console.log("Searching for recipes with ingredients:", ingredients);
+
+            // In a real app, the backend would return a list of recipes.
+            // We simulate that here:
+            const simulatedRecipes = [
+                {
+                    id: 1,
+                    title: "Classic Spaghetti Carbonara",
+                    image: "via.placeholder.com",
+                    missing: 1,
+                    source: "Allrecipes"
+                },
+                {
+                    id: 2,
+                    title: "Simple Chicken Stir-Fry",
+                    image: "via.placeholder.com",
+                    missing: 0,
+                    source: "Food Network"
+                },
+                {
+                    id: 3,
+                    title: "Quick Tomato Soup",
+                    image: "via.placeholder.com",
+                    missing: 0,
+                    source: "BBC Good Food"
+                }
+            ];
+
+            displayRecipes(simulatedRecipes);
+        }
+
+        function displayRecipes(recipes) {
+            recipeResults.innerHTML = '';
+            if (recipes.length === 0) {
+                recipeResults.innerHTML = '<p>No recipes found matching your ingredients.</p>';
+                return;
+            }
+
+            recipes.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.innerHTML = `
+                    <img src="${recipe.image}" alt="${recipe.title}">
+                    <div class="recipe-card-content">
+                        <h3>${recipe.title}</h3>
+                        <p>Missing ingredients: <strong>${recipe.missing}</strong></p>
+                        <p>Source: ${recipe.source}</p>
+                        <!-- In a real app, this link would go to the recipe instructions -->
+                        <a href="#">View Recipe</a> 
+                    </div>
+                `;
+                recipeResults.appendChild(card);
+            });
+        }
+    </script>
+
+</body>
+</html>
