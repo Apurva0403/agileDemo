@@ -19,6 +19,11 @@ pipeline {
                 bat 'java Hello'
             }
         }
+        stage('Archive') {
+    steps {
+        archiveArtifacts artifacts: '*.class', fingerprint: true
+    }
+}
     }
 
     post {
